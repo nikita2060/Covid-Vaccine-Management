@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include <windows.h>
 
-void gotoxy(int x,int y)
+void gotoxy(int x,int y)//placing pointer in desired location
 {
 	COORD c;
 	c.X = x;
@@ -27,15 +27,15 @@ typedef struct Person
 } Person;
 
 void registration ();
-void book_appointment (int);
-void vaccine_stocks();
-void add_vaccine_stocks();
+int book_appointment (int);
+// void vaccine_stocks();
+// void add_vaccine_stocks();
 int search_person(int);
 void person_details(int);
 
 int main()
 {
-	int choice;
+	int choice,citizenship_no;
     while(1)
     {
         printf("Enter your choice\n");
@@ -52,19 +52,19 @@ int main()
             registration();
             break;
             case 2:
-			printf("enter citizenship");
-			scanf("%d",citizenship_no);
+			printf("Enter citizenship");
+			scanf("%d",&citizenship_no);
             book_appointment(citizenship_no);
 			
             break;
-            case 3:
-            vaccine_stocks();
-			break;
-			case 4:
-			add_vaccine_stocks();
-			break;
+            // case 3:
+            // vaccine_stocks();
+			// break;
+			// case 4:
+			// add_vaccine_stocks();
+			// break;
 			case 5:
-			person_details();
+			person_details(citizenship_no);
 			break;
 			case 6:
 			exit(0);
@@ -80,6 +80,7 @@ int main()
 
 void registration ()
 {
+    char ch;
     FILE *fp;
     fp=fopen("registration.txt","r+");
 	if(fp == NULL)
@@ -96,7 +97,7 @@ void registration ()
     printf("Enter name\n");
     scanf("%s", &person.name);
     printf("Enter citizenship id\n");
-    scanf("%d", &people.citizenship_id);
+    scanf("%d", &person.citizenship_id);
 
 	if ( search_person(person.citizenship_id) == 1) 
 	{
@@ -104,26 +105,29 @@ void registration ()
 		return;
 	}
 
+
+
     printf("Enter province no\n");
     scanf("%s", &person.province);
     printf("Enter District\n");
     scanf("%s", &person.district);
-    printf("Enter phone number\n")
+    printf("Enter phone number\n");
     scanf("%s", &person.phone_number);
 
 	//write structure into the file
     fwrite(&person,sizeof(person),1,fp);
     fclose(fp);
-	printf("Do you want to book appointment? ");
+	printf("Do you want to book appointment(Y-Yes ans N-No)? ");
+    scanf("%c",&ch);
+    if(ch=='y')
+    book_appointment(person.citizenship_id);
+}  
 
-	book_appointment(person.citizenship_id);
-}
-
-void book_appointment (int citizenship_id)
+int book_appointment (int citizenship_id)
 {
     Person person;
     FILE *fp,*fp_temp;
-    Person person;
+    // Person person;
 
     fp = fopen ("registeration.txt", "r");
     fp_temp=fopen("temp.txt","w");
@@ -156,15 +160,15 @@ void book_appointment (int citizenship_id)
     rename("temp.txt","registeration.txt");
 }
 
-void vaccine_stocks()
-{
+// void vaccine_stocks()
+// {
 	
-}
+// }
 
-void add_vaccine_stocks()
-{
+// void add_vaccine_stocks()
+// {
 	
-}
+// }
 
 int search_person(int citizenship_id)		//return 0 if not found and return 1 if found
 {
@@ -196,7 +200,7 @@ void person_details(int citizenship_id)
     if (fp == NULL)
     {
         //printf("Error opening file\n");
-        return 0;
+        // return 0;
     }
 	while( fread(&person,sizeof(person),1,fp) )
 	{
@@ -206,5 +210,9 @@ void person_details(int citizenship_id)
             printf("Citizenship id:%d\n",person.citizenship_id);
             printf("Province no:%s\n",person.province);
             printf("District:%s\n",person.district);
-            printf()
+            printf("Phone no:%s",person.phone_number);
+            printf("No of dose taken:%d\n",person.doses);
+        }
+    }
+}
 
